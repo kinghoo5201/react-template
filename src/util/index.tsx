@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { init } from "@rematch/core";
 import * as _ from "lodash";
-import { resolve } from "dns";
 
 export const isDev = window.location.hostname === 'localhost';
 
