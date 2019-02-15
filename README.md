@@ -27,7 +27,7 @@ the 404.tsx will redirect to ./src/page/404.tsx
 the page data store control is at ./src/models
 the model's content is :
 
-```ts
+```tsx
 export default{
   state:{
     test:'ccc'
@@ -38,7 +38,7 @@ export default{
 ```
 file's name will be store's name
 
-```ts
+```tsx
 import React from 'react';
 import { connectModel } from '../util';
 
