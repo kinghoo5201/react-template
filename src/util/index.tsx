@@ -18,9 +18,9 @@ export const connectModel = (
   return (WrapperComponent: any) => {
     class App extends React.Component<any, any> {
       public static displayName =
-        "@connect" + WrapperComponent.displayName
+        "@connect" + (WrapperComponent.displayName
           ? `(${WrapperComponent.displayName})`
-          : "";
+          : "");
       public render() {
         return <WrapperComponent {...this.props} />;
       }
