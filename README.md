@@ -94,3 +94,8 @@ import { Switch, Route, HashRouter as Router } from "react-router-dom";
 then you can use HashRouter to adapt to gitpage or giteepage,when use spa.
 
 also when using Link at HashRouter will report an error,but it dose not matter.so just do it!
+
+
+## 20190227 update
+
+if you want to declare module or some unknown type , you can create a file named ```./src/types.d.ts``` to resolve it
