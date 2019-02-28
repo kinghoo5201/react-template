@@ -10,34 +10,34 @@ const page404: any = (require as any).context("./page", false, /404\.tsx/);
 const keys404: string[] = page404.keys();
 
 export default class App extends React.Component<any, any> {
-  render() {
-    return (
-      <Provider store={store}>
-        <Layout>
-          <Router>
-            <Switch>
-              {keys.map((key: string) => {
-                const pathArr: string[] = key
-                  .replace(/^\./, "")
-                  .replace(/\/index\.tsx$/, "")
-                  .split("/");
-                const path: string = pathArr.join("/") || "/";
-                return (
-                  <Route
-                    key={path}
-                    path={path}
-                    exact
-                    component={context(key).default}
-                  />
-                );
-              })}
-              {keys404.map((key: string) => {
-                return <Route key={key} component={page404(key).default} />
-              })}
-            </Switch>
-          </Router>
-        </Layout>
-      </Provider>
-    );
-  }
+    render() {
+        return (
+            <Provider store={store}>
+                <Router>
+                    <Layout>
+                        <Switch>
+                            {keys.map((key: string) => {
+                                const pathArr: string[] = key
+                                    .replace(/^\./, "")
+                                    .replace(/\/index\.tsx$/, "")
+                                    .split("/");
+                                const path: string = pathArr.join("/") || "/";
+                                return (
+                                    <Route
+                                        key={path}
+                                        path={path}
+                                        exact
+                                        component={context(key).default}
+                                    />
+                                );
+                            })}
+                            {keys404.map((key: string) => {
+                                return <Route key={key} component={page404(key).default} />
+                            })}
+                        </Switch>
+                    </Layout>
+                </Router>
+            </Provider>
+        );
+    }
 }
