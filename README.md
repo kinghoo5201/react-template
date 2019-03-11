@@ -99,3 +99,5 @@ also when using Link at HashRouter will report an error,but it dose not matter.s
 ## 20190227 update
 
 if you want to declare module or some unknown type , you can create a file named ```./src/types.d.ts``` to resolve it
+
+
