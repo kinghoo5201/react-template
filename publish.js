@@ -9,12 +9,14 @@ const child_process = require('child_process');
 
 const arg = process.argv[2];
 let arg_mess = '';
+const arg_messes = [];
 process.argv.forEach((ag, index) => {
     if (index <= 2) {
         return;
     }
-    arg_mess += ag + ' ';
+    arg_messes.push(ag);
 });
+arg_mess = arg_messes.join(' ');
 
 const shell_reset = 'git reset HEAD';
 const shell_add = 'git add .';
