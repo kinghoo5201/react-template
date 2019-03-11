@@ -7,9 +7,14 @@ const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
 
-const isOnlyCommit = process.argv.length === 3;
-const arg = process.argv[process.argv.length - (isOnlyCommit ? 1 : 2)];
-const arg_mess = isOnlyCommit ? null : process.argv[process.argv.length - 1];
+const arg = process.argv[2];
+let arg_mess = '';
+process.argv.forEach((ag, index) => {
+    if (index <= 2) {
+        return;
+    }
+    arg_mess += ag + ' ';
+});
 
 const shell_reset = 'git reset HEAD';
 const shell_add = 'git add .';
