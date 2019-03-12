@@ -41,19 +41,19 @@ root path from ./src/page
 
 ## file dir to path
 
-./
+> ./
 
---./src
+>> ./src
 
-----./src/page
+>>> ./src/page
 
-------./src/page/index.tsx
+>>>> ./src/page/index.tsx
 
-------./src/page/404.tsx
+>>>> ./src/page/404.tsx
 
---------./src/page/test
+>>>> ./src/page/test
 
-----------./src/page/test/index.tsx
+>>>>> ./src/page/test/index.tsx
 
 page dir is ./src/page
 
