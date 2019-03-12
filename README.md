@@ -1,3 +1,37 @@
+## usage
+
+add to your own repository
+
+```shell
+git clone xxx
+rm -rf .git // remove this git remote
+git init
+git remote add origin xxx // add new origin what is empty repository
+git add .
+git commit -m "init"
+git push -u master
+```
+start project
+
+```shell
+npm i
+npm start
+```
+
+push your code to repository
+
+```shell
+npm run commit [some message]
+```
+
+publish your code to build dir and commit to repositroy
+
+```shell
+npm run publish [some message]
+```
+
+
+
 ## logs
 
 #19-02-15 init with antd & ts 
