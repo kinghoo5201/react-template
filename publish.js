@@ -20,9 +20,10 @@ arg_mess = arg_messes.join(' ');
 
 const shell_reset = 'git reset HEAD';
 const shell_add = 'git add .';
-const shell_commit = 'git commit -m "' + (arg_mess || ('update:shell auto commit with command ' + arg)) + '"';
+let shell_commit = 'git commit -m "' + (arg_mess || ('update:shell auto commit with command ' + arg)) + '"';
 const shell_pull = 'git pull';
 const shell_push = 'git push';
+const shell_status = 'git status';
 const exclude = ['asset-manifest.json',
     'favicon.ico',
     'index.html',
@@ -110,17 +111,19 @@ const rm_dir = paths => {
             break;
         }
         case '-publish': {
-            console.log('进行项目发布，发布将会用build文件夹下的资源文件替换public文件夹下的资源文件！！');
-            console.log('文件转移中...');
-            const usefull_dir = fs.readdirSync(build_dir).filter(dir => {
-                for (const i in exclude) {
-                    if (new RegExp(exclude[i]).test(dir)) {
-                        return false;
+            if (fs.existsSync(path.resolve(__dirname, './build'))) {
+                console.log('进行项目发布，发布将会用build文件夹下的资源文件替换public文件夹下的资源文件！！');
+                console.log('文件转移中...');
+                const usefull_dir = fs.readdirSync(build_dir).filter(dir => {
+                    for (const i in exclude) {
+                        if (new RegExp(exclude[i]).test(dir)) {
+                            return false;
+                        }
                     }
-                }
-                return true;
-            });
-            rm_dir(usefull_dir);// 移动文件
+                    return true;
+                });
+                rm_dir(usefull_dir);// 移动文件
+            }// 如果build文件不存在，直接进入打包阶段
             console.log('正在打包文件，请等待...');
             const pub_res = await prom('npm run build');
             console.log(pub_res.message);
