@@ -27,9 +27,10 @@ const exclude = ['asset-manifest.json',
     'favicon.ico',
     'index.html',
     'manifest.json',
-    'precache-manifest.3f49e74f1d3c601d11af66453c714e37.js',
+    'precache-manifest',
     'service-worker.js',
-    'static'];
+    'static'
+];// 除了资源文件，其他静态文件以public目录中的为主
 
 const build_dir = path.resolve(__dirname, './build');
 const public_dir = path.resolve(__dirname, './public');
@@ -111,7 +112,14 @@ const rm_dir = paths => {
         case '-publish': {
             console.log('进行项目发布，发布将会用build文件夹下的资源文件替换public文件夹下的资源文件！！');
             console.log('文件转移中...');
-            const usefull_dir = fs.readdirSync(build_dir).filter(dir => exclude.indexOf(dir) < 0);
+            const usefull_dir = fs.readdirSync(build_dir).filter(dir => {
+                for (const i in exclude) {
+                    if (new RegExp(exclude[i]).test(dir)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
             rm_dir(usefull_dir);// 移动文件
             console.log('正在打包文件，请等待...');
             const pub_res = await prom('npm run build');
@@ -121,6 +129,13 @@ const rm_dir = paths => {
             }
             console.log('打包错误！请检查！');
             break;
+        }
+        case '-pull': {
+            const pull_res = await prom(shell_pull);
+            if (!pull_res.flag) {
+                console.log('拉取代码失败，可能代码未变动！');
+            }
+            return console.log(pull_res.message);
         }
         default: {
             console.log('命令错误！！命令后缀参数必须是：-commit 或者 -publish');
