@@ -135,7 +135,7 @@ const rmMap = () => {
     fs.writeFileSync(path.resolve(__dirname, './build/asset-manifest.json'), JSON.stringify(assets, null, '\t'));
     console.log('重写asset-manifest.json成功！');
 }
-const publish = (hasMap = false) => {
+const publish = async (hasMap = false) => {
     if (fs.existsSync(path.resolve(__dirname, './build'))) {
         console.log('进行项目发布，发布将会用build文件夹下的资源文件替换public文件夹下的资源文件！！');
         console.log('文件转移中...');
@@ -159,7 +159,6 @@ const publish = (hasMap = false) => {
         return commit();
     }
     console.log('打包错误！请检查！');
-    break;
 }
 (async () => {
     switch (arg.trim()) {
@@ -168,10 +167,12 @@ const publish = (hasMap = false) => {
             break;
         }
         case '-publish': {
-            publish();
+            await publish();
+            break;
         }
         case '-publish-map': {
-            publish(true);
+            await publish(true);
+            break;
         }
         case '-pull': {
             const pull_res = await prom(shell_pull);
