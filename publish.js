@@ -104,6 +104,63 @@ const rm_dir = paths => {
         console.log('复制成功!');
     });
 };
+const rmMap = () => {
+    const cssPath = path.resolve(build_dir, 'static/css');
+    const jsPath = path.resolve(build_dir, 'static/js');
+    const jsMaps = fs.readdirSync(jsPath).filter(item => {
+        return /\.map$/.test(item)
+    }).map(item => {
+        return path.resolve(jsPath, item);
+    });
+    const cssMaps = fs.readdirSync(cssPath).filter(item => {
+        return /\.map$/.test(item)
+    }).map(item => {
+        return path.resolve(cssPath, item);
+    });
+    jsMaps.forEach(item => {
+        child_process.execSync('rm -rf ' + item);
+    });
+    cssMaps.forEach(item => {
+        child_process.execSync('rm -rf ' + item);
+    });
+    console.log('.map文件删除成功！');
+    const assets = require('./build/asset-manifest.json');
+    const keys = Object.keys(assets).filter(item => {
+        return /\.map$/.test(item)
+    });
+    keys.forEach(item => {
+        delete assets[item];
+    });
+    child_process.execSync('rm -rf ' + path.resolve(__dirname, './build/asset-manifest.json'));
+    fs.writeFileSync(path.resolve(__dirname, './build/asset-manifest.json'), JSON.stringify(assets, null, '\t'));
+    console.log('重写asset-manifest.json成功！');
+}
+const publish = (hasMap = false) => {
+    if (fs.existsSync(path.resolve(__dirname, './build'))) {
+        console.log('进行项目发布，发布将会用build文件夹下的资源文件替换public文件夹下的资源文件！！');
+        console.log('文件转移中...');
+        const usefull_dir = fs.readdirSync(build_dir).filter(dir => {
+            for (const i in exclude) {
+                if (new RegExp(exclude[i]).test(dir)) {
+                    return false;
+                }
+            }
+            return true;
+        });
+        rm_dir(usefull_dir);// 移动文件
+    }// 如果build文件不存在，直接进入打包阶段
+    console.log('正在打包文件，请等待...');
+    const pub_res = await prom('npm run build');
+    console.log(pub_res.message);
+    if (pub_res.flag) {
+        if (!hasMap) {
+            rmMap();
+        }
+        return commit();
+    }
+    console.log('打包错误！请检查！');
+    break;
+}
 (async () => {
     switch (arg.trim()) {
         case '-commit': {
@@ -111,27 +168,10 @@ const rm_dir = paths => {
             break;
         }
         case '-publish': {
-            if (fs.existsSync(path.resolve(__dirname, './build'))) {
-                console.log('进行项目发布，发布将会用build文件夹下的资源文件替换public文件夹下的资源文件！！');
-                console.log('文件转移中...');
-                const usefull_dir = fs.readdirSync(build_dir).filter(dir => {
-                    for (const i in exclude) {
-                        if (new RegExp(exclude[i]).test(dir)) {
-                            return false;
-                        }
-                    }
-                    return true;
-                });
-                rm_dir(usefull_dir);// 移动文件
-            }// 如果build文件不存在，直接进入打包阶段
-            console.log('正在打包文件，请等待...');
-            const pub_res = await prom('npm run build');
-            console.log(pub_res.message);
-            if (pub_res.flag) {
-                return commit();
-            }
-            console.log('打包错误！请检查！');
-            break;
+            publish();
+        }
+        case '-publish-map': {
+            publish(true);
         }
         case '-pull': {
             const pull_res = await prom(shell_pull);
