@@ -33,7 +33,7 @@ const exclude = ['asset-manifest.json',
     'static'
 ];// 除了资源文件，其他静态文件以public目录中的为主
 
-const build_dir = path.resolve(__dirname, './build');
+const build_dir = path.resolve(__dirname, './docs');
 const public_dir = path.resolve(__dirname, './public');
 
 const prom = (command) => {
@@ -124,19 +124,24 @@ const rmMap = () => {
         child_process.execSync('rm -rf ' + item);
     });
     console.log('.map文件删除成功！');
-    const assets = require('./build/asset-manifest.json');
+    const assets = require(path.resolve(build_dir, 'asset-manifest.json'));
     const keys = Object.keys(assets).filter(item => {
         return /\.map$/.test(item)
     });
     keys.forEach(item => {
         delete assets[item];
     });
-    child_process.execSync('rm -rf ' + path.resolve(__dirname, './build/asset-manifest.json'));
-    fs.writeFileSync(path.resolve(__dirname, './build/asset-manifest.json'), JSON.stringify(assets, null, '\t'));
+    child_process.execSync('rm -rf ' + path.resolve(build_dir, 'asset-manifest.json'));
+    fs.writeFileSync(path.resolve(build_dir, 'asset-manifest.json'), JSON.stringify(assets, null, '\t'));
     console.log('重写asset-manifest.json成功！');
 }
+const changeDir = () => {
+    child_process.execSync('rm -rf ' + build_dir);
+    const bdDir = path.resolve(__dirname, './build');
+    child_process.execSync('mv ' + bdDir + ' ' + build_dir);
+};
 const publish = async (hasMap = false) => {
-    if (fs.existsSync(path.resolve(__dirname, './build'))) {
+    if (fs.existsSync(build_dir)) {
         console.log('进行项目发布，发布将会用build文件夹下的资源文件替换public文件夹下的资源文件！！');
         console.log('文件转移中...');
         const usefull_dir = fs.readdirSync(build_dir).filter(dir => {
@@ -153,6 +158,7 @@ const publish = async (hasMap = false) => {
     const pub_res = await prom('npm run build');
     console.log(pub_res.message);
     if (pub_res.flag) {
+        changeDir();
         if (!hasMap) {
             rmMap();
         }
